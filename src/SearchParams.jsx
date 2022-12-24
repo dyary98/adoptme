@@ -1,5 +1,8 @@
-import { useEffect, useState } from "react";
-import Pet from "./Pet";
+
+
+  import { useEffect, useState } from "react";
+import Results from "./Results";
+import useBreedList from "./useBreedList";
 const ANIMALS = ["bird", "cat", "dog", "rabbit", "reptile"];
 
 const SearchParams = () => {
@@ -7,11 +10,12 @@ const SearchParams = () => {
   const [location, setLocation] = useState("");
   const [animal, setAnimal] = useState("");
   const [breed, setBreed] = useState("");
-  const breeds = [];
+  const [breeds] = useBreedList(animal);
 
   useEffect(() => {
     requestPets();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  // eslint-disable-line react-hooks/exhaustive-deps
   //an effect runs every single time you re render the app
   //array of dependencies
 
@@ -20,17 +24,18 @@ const SearchParams = () => {
       `http://pets-v2.dev-apis.com/pets?animal=${animal}&location=${location}&breed=${breed}`
     );
     const json = await res.json();
-    console.log(json);
 
     setPets(json.pets);
   }
 
   return (
     <div className="search-params">
-      <form onSubmit={(e) => {
-        e.preventDefault();
-        requestPets();
-      }}>
+      <form
+        onSubmit={(e) => {	
+          e.preventDefault();	
+          requestPets();	
+        }}	
+      >
         <label htmlFor="location">
           Location
           <input
@@ -84,14 +89,7 @@ const SearchParams = () => {
 
         <button>Submit</button>
       </form>
-      {pets.map((pet) => (
-        <Pet
-          name={pet.name}
-          animal={pet.animal}
-          breed={pet.breed}
-          key={pet.id}
-        />
-      ))}
+      <Results pets = {pets} />
     </div>
   );
 };
